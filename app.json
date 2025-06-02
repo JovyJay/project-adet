@@ -1,4 +1,6 @@
 {
+  "web": {"bundler": "metro"},
+  "scheme": "store-management",
   "expo": {
     "name": "store-management",
     "slug": "store-management",
@@ -24,6 +26,9 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }
