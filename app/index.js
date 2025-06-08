@@ -1,78 +1,78 @@
 import React, { useState } from 'react';
-import { router } from 'expo-router';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
-export default function LogInPage() {
-  const [role, setRole] = useState('');
+export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter(); 
 
   const handleLogin = () => {
-    // Navigate to DashboardPage after login
-    router.replace('/DashboardPage');
+    if (username && password && role) {
+      router.push('/DashboardPage'); 
+    } else {
+      alert('Please fill in all fields');
+    }
   };
 
   return (
     <View style={styles.container}>
-      {/* App Name */}
       <View style={styles.logoRow}>
+        <Image source={require('../assets/logo.png')} style={styles.logoImg} />
         <Text style={styles.logoText}>PathSmart</Text>
       </View>
-      {/* Title and Subtitle */}
-      <Text style={styles.title}>PathSmart System</Text>
-      <Text style={styles.subtitle}>
-        Enter your username and password to continue. Please log in as either an Administrator or a Stall Owner.
-      </Text>
-      {/* Role Picker */}
-      <View style={styles.inputWrapper}>
-        <Picker
-          selectedValue={role}
-          onValueChange={setRole}
-          style={styles.picker}
-          dropdownIconColor="#222"
-        >
-          <Picker.Item label="Login as" value="" />
-          <Picker.Item label="Administrator" value="admin" />
-          <Picker.Item label="Stall Owner" value="owner" />
-        </Picker>
-      </View>
-      {/* Username Input */}
-      <View style={styles.inputWrapper}>
-        <MaterialCommunityIcons name="account-outline" size={22} color="#222" style={styles.icon} />
-        <TextInput
-          style={styles.input}
-          placeholder="Username"
-          value={username}
-          onChangeText={setUsername}
-          placeholderTextColor="#888"
-        />
-      </View>
-      {/* Password Input */}
-      <View style={styles.inputWrapper}>
-        <Feather name="lock" size={22} color="#222" style={styles.icon} />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry={!showPassword}
-          placeholderTextColor="#888"
-        />
-        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <Feather name={showPassword ? "eye" : "eye-off"} size={22} color="#222" />
+      <View style={styles.formBox}>
+        <Text style={styles.title}>PathSmart System</Text>
+        <Text style={styles.desc}>
+          Enter your username and password to continue. Please log in as either an Administrator or a Stall Owner.
+        </Text>
+        <View style={styles.pickerWrapper}>
+          <Picker
+            selectedValue={role}
+            style={styles.picker}
+            onValueChange={(itemValue) => setRole(itemValue)}
+            dropdownIconColor="#222"
+          >
+            <Picker.Item label="Login as" value="" />
+            <Picker.Item label="Administrator" value="admin" />
+            <Picker.Item label="Stall Owner" value="owner" />
+          </Picker>
+        </View>
+        <View style={styles.inputGroup}>
+          <MaterialCommunityIcons name="account-outline" size={28} color="#222" style={styles.inputIcon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Username"
+            value={username}
+            onChangeText={setUsername}
+            placeholderTextColor="#888"
+          />
+        </View>
+        <View style={styles.inputGroup}>
+          <Feather name="lock" size={26} color="#222" style={styles.inputIcon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPassword}
+            placeholderTextColor="#888"
+          />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+            <Feather name={showPassword ? "eye" : "eye-off"} size={24} color="#222" />
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity>
+          <Text style={styles.forgot}>Forgot your password?</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
+          <Text style={styles.loginBtnText}>Login</Text>
         </TouchableOpacity>
       </View>
-      {/* Forgot Password */}
-      <TouchableOpacity>
-        <Text style={styles.forgot}>Forgot your password?</Text>
-      </TouchableOpacity>
-      {/* Login Button */}
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -81,79 +81,97 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingHorizontal: 28,
-    paddingTop: 48,
+    alignItems: 'center',
     justifyContent: 'flex-start',
+    paddingTop: 40,
   },
   logoRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    alignSelf: 'flex-start',
+    marginLeft: 24,
     marginBottom: 24,
-    marginTop: 8,
-    justifyContent: 'flex-start',
+  },
+  logoImg: {
+    width: 32,
+    height: 32,
+    marginRight: 7,
+    resizeMode: 'contain',
   },
   logoText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#222',
+    fontWeight: 'bold',
+    fontSize: 18,
+    color: '#388e3c',
+  },
+  formBox: {
+    width: '90%',
+    maxWidth: 370,
+    alignSelf: 'center',
   },
   title: {
+    fontWeight: 'bold',
     fontSize: 20,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginBottom: 6,
+    marginBottom: 4,
     color: '#222',
-  },
-  subtitle: {
-    fontSize: 13,
-    color: '#666',
     textAlign: 'center',
-    marginBottom: 22,
   },
-  inputWrapper: {
+  desc: {
+    color: '#888',
+    fontSize: 13,
+    marginBottom: 18,
+    textAlign: 'center',
+    lineHeight: 18,
+  },
+  pickerWrapper: {
+    borderWidth: 1,
+    borderColor: '#bbb',
+    borderRadius: 4,
+    marginBottom: 14,
+    backgroundColor: '#fafafa',
+    overflow: 'hidden',
+  },
+  picker: {
+    height: 48,
+    width: '100%',
+  },
+  inputGroup: {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#222',
-    borderRadius: 6,
+    borderColor: '#bbb',
+    borderRadius: 4,
     marginBottom: 14,
+    backgroundColor: '#fafafa',
     paddingHorizontal: 10,
-    backgroundColor: '#f8f8f8',
-    height: 48,
+    height: 52,
   },
-  icon: {
-    marginRight: 6,
+  inputIcon: {
+    marginRight: 8,
   },
   input: {
     flex: 1,
     height: 48,
-    fontSize: 16,
+    fontSize: 17,
     color: '#222',
-    backgroundColor: 'transparent',
-  },
-  picker: {
-    flex: 1,
-    height: 48,
-    color: '#222',
-    backgroundColor: 'transparent',
   },
   forgot: {
-    color: '#222',
-    textDecorationLine: 'underline',
-    marginBottom: 18,
-    marginLeft: 2,
+    color: '#388e3c',
     fontSize: 13,
+    textDecorationLine: 'underline',
+    alignSelf: 'flex-start',
+    marginBottom: 14,
+    marginLeft: 2,
   },
-  button: {
+  loginBtn: {
     backgroundColor: '#6BA06B',
+    borderRadius: 4,
     paddingVertical: 14,
-    borderRadius: 6,
     alignItems: 'center',
-    marginTop: 6,
+    marginTop: 5,
   },
-  buttonText: {
+  loginBtnText: {
     color: '#fff',
-    fontWeight: '600',
-    fontSize: 17,
+    fontWeight: 'bold',
+    fontSize: 18,
   },
 });

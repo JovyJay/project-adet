@@ -9,6 +9,7 @@ import {
   FlatList,
   Alert,
   Modal,
+  Platform,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -35,18 +36,24 @@ export default function ViewListings() {
 
   // Remove logic
   const handleRemove = (id) => {
-    Alert.alert(
-      'Remove Listing',
-      'Are you sure you want to remove this listing?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Remove',
-          style: 'destructive',
-          onPress: () => setListings(listings.filter(item => item.id !== id)),
-        },
-      ]
-    );
+    if (Platform.OS === 'web') {
+      if (window.confirm('Are you sure you want to remove this listing?')) {
+        setListings(listings.filter(item => item.id !== id));
+      }
+    } else {
+      Alert.alert(
+        'Remove Listing',
+        'Are you sure you want to remove this listing?',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Remove',
+            style: 'destructive',
+            onPress: () => setListings(listings.filter(item => item.id !== id)),
+          },
+        ]
+      );
+    }
   };
 
   // Open Edit Modal
@@ -70,8 +77,8 @@ export default function ViewListings() {
   };
 
   const handleAddListing = () => {
-  router.push('/AddListings'); // <-- match the filename (with "s")
-};
+    router.push('/AddListings'); // <-- match the filename (with "s")
+  };
 
   // Filtered listings based on search
   const filteredListings = listings.filter(item =>
@@ -122,39 +129,39 @@ export default function ViewListings() {
           data={filteredListings}
           keyExtractor={item => item.id}
           contentContainerStyle={{ paddingBottom: 20 }}
-         renderItem={({ item }) => (
-  <View style={styles.listingCard}>
-    <Image source={{ uri: item.image }} style={styles.listingImage} />
-    <View style={{ width: '100%' }}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <Text style={styles.listingName}>{item.name}</Text>
-        <View style={{ alignItems: 'flex-end' }}>
-          <Text style={[styles.statusText, styles.statusAvailableText]}>{item.status}</Text>
-          <Text style={styles.amountDisplay}>
-            {item.price ? `₱${item.price}` : ''}
-          </Text>
-        </View>
-      </View>
-      <Text style={[styles.listingCategory, { marginBottom: 8, marginTop: 0, textAlign: 'left', alignSelf: 'flex-start' }]}>
-        {item.category}
-      </Text>
-    </View>
-    <View style={styles.buttonRow}>
-      <TouchableOpacity
-        style={styles.removeButton}
-        onPress={() => handleRemove(item.id)}
-      >
-        <Text style={styles.removeButtonText}>Remove</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.editButton}
-        onPress={() => handleEdit(item)}
-      >
-        <Text style={styles.editButtonText}>Edit</Text>
-      </TouchableOpacity>
-    </View>
-  </View>
-)}
+          renderItem={({ item }) => (
+            <View style={styles.listingCard}>
+              <Image source={{ uri: item.image }} style={styles.listingImage} />
+              <View style={{ width: '100%' }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <Text style={styles.listingName}>{item.name}</Text>
+                  <View style={{ alignItems: 'flex-end' }}>
+                    <Text style={[styles.statusText, styles.statusAvailableText]}>{item.status}</Text>
+                    <Text style={styles.amountDisplay}>
+                      {item.price ? `₱${item.price}` : ''}
+                    </Text>
+                  </View>
+                </View>
+                <Text style={[styles.listingCategory, { marginBottom: 8, marginTop: 0, textAlign: 'left', alignSelf: 'flex-start' }]}>
+                  {item.category}
+                </Text>
+              </View>
+              <View style={styles.buttonRow}>
+                <TouchableOpacity
+                  style={styles.removeButton}
+                  onPress={() => handleRemove(item.id)}
+                >
+                  <Text style={styles.removeButtonText}>Remove</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.editButton}
+                  onPress={() => handleEdit(item)}
+                >
+                  <Text style={styles.editButtonText}>Edit</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
         />
       )}
 
